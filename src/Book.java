@@ -1,8 +1,3 @@
-/**
- * Represents a book item with an ID, name, author, and number of pages.
- * The book is constructed from a tab-separated string with the format:
- * <id> <tab> <name> <tab> <author> <tab> <pages>
- */
 public class Book implements Item {
     private final int id;
     private final String name;
