@@ -135,21 +135,24 @@ class SimilarityBasedRecommender<T extends Item> extends RecommenderSystem<T> {
                         return null;
                     }
 
-                    double numerator = 0.0;
-                    double denominator = 0.0;
+                    double numerator = itemRatings.stream()
+                            .filter(r -> similarities.getOrDefault(r.getUserId(), 0.0) > 0)
+                            .mapToDouble(r -> {
+                                int v = r.getUserId();
+                                double sim = similarities.getOrDefault(v, 0.0);
+                                double biasV = userBiases.getOrDefault(v, 0.0);
+                                double itemBias = itemBiases.getOrDefault(itemId, 0.0);
+                                double adjustedRating = r.getRating() - globalBias - itemBias - biasV;
 
-                    for (Rating<T> r : itemRatings) {
-                        int v = r.getUserId();
-                        double sim = similarities.getOrDefault(v, 0.0);
-                        if (sim <= 0) continue;
+                                return sim * adjustedRating;
+                            })
+                            .sum();
 
-                        double biasV = userBiases.getOrDefault(v, 0.0);
-                        double itemBias = itemBiases.getOrDefault(itemId, 0.0);
-                        double adjustedRating = r.getRating() - globalBias - itemBias - biasV;
-
-                        numerator += sim * adjustedRating;
-                        denominator += Math.abs(sim);
-                    }
+                    double denominator = itemRatings.stream()
+                            .mapToDouble(r -> similarities.getOrDefault(r.getUserId(), 0.0))
+                            .filter(sim -> sim > 0)
+                            .map(Math::abs)
+                            .sum();
 
                     //if similar users rated item then add
                     double itemBias = itemBiases.getOrDefault(itemId, 0.0);

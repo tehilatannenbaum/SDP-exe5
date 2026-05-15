@@ -1,8 +1,6 @@
 import java.util.*;
 import java.util.stream.Collectors;
 
-import static java.util.stream.Collectors.*;
-
 /** Popularity‑based recommender implementation. */
 class PopularityBasedRecommender<T extends Item> extends RecommenderSystem<T> {
     private static final int POPULARITY_THRESHOLD = 100;

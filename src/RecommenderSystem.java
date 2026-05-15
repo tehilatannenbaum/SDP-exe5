@@ -1,9 +1,7 @@
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import static java.util.stream.Collectors.groupingBy;
-import static java.util.stream.Collectors.toSet;
 
 /** Abstract generic recommender system. */
 abstract class RecommenderSystem<T extends Item> {
